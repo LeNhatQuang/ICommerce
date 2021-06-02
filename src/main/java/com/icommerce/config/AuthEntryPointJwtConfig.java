@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Component
 public class AuthEntryPointJwtConfig implements AuthenticationEntryPoint {
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwtConfig.class);
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,

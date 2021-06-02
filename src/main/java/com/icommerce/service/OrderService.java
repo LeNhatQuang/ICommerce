@@ -23,7 +23,7 @@ public class OrderService{
         OrderEntity orderEntity;
 
         if(orderDTO.getId() != null){
-            OrderEntity savedOrderEntity = orderRepository.findOne(orderDTO.getId());
+            OrderEntity savedOrderEntity = orderRepository.findById(orderDTO.getId()).get();
             orderEntity = orderConverter.toEntity(orderDTO, savedOrderEntity);
         } else {
             orderEntity = orderConverter.toEntity(orderDTO);
@@ -35,7 +35,7 @@ public class OrderService{
 
     public void delete(long[] ids) {
         for(long item: ids) {
-            orderRepository.delete(item);
+            orderRepository.deleteById(item);
         }
     }
 
@@ -47,7 +47,7 @@ public class OrderService{
     }
 
     public OrderDTO findOneById(long id) {
-        OrderEntity orderEntity = orderRepository.findOne(id);
+        OrderEntity orderEntity = orderRepository.findById(id).get();
         return orderConverter.toDTO(orderEntity);
     }
 

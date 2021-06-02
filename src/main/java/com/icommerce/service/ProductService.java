@@ -24,7 +24,7 @@ public class ProductService implements  IProductService{
         ProductEntity productEntity;
 
         if(productDTO.getId() != null){
-            ProductEntity savedProductEntity = productRepository.findOne(productDTO.getId());
+            ProductEntity savedProductEntity = productRepository.findById(productDTO.getId()).get();
             productEntity = productConverter.toEntity(productDTO, savedProductEntity);
         } else {
             productEntity = productConverter.toEntity(productDTO);
@@ -46,7 +46,7 @@ public class ProductService implements  IProductService{
     @Override
     public void delete(long[] ids) {
         for(long item: ids) {
-            productRepository.delete(item);
+            productRepository.deleteById(item);
         }
     }
 
@@ -60,7 +60,7 @@ public class ProductService implements  IProductService{
 
     @Override
     public ProductDTO findOneById(long id) {
-        ProductEntity productEntity = productRepository.findOne(id);
+        ProductEntity productEntity = productRepository.findById(id).get();
         return productConverter.toDTO(productEntity);
     }
 

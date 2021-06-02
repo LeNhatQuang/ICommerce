@@ -2,26 +2,26 @@ package com.icommerce.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
 @AllArgsConstructor
-@Table(name = "user_info")
+@NoArgsConstructor
+@Table(name = "\"user\"")
 public class UserEntity extends BaseEntity {
 
-    @Column(name = "uername")
-    private String userName;
+    @Column(name = "username")
+    private String username;
 
     @Column
     private String password;
 
-    @Column(name = "fullname")
+    @Column(name = "fullName")
     private String fullName;
 
     @Column

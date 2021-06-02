@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,9 @@ public class AuthenticationAPI {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    PasswordEncoder encoder;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -72,34 +76,34 @@ public class AuthenticationAPI {
         Set<RoleEntity> roles = new HashSet<>();
 
         if (strRoles == null) {
-            RoleEntity role = roleRepository.findByName(RoleEnum.USER)
+            RoleEntity role = roleRepository.findByRole(RoleEnum.USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
             roles.add(role);
         } else {
             for(String strRole : strRoles) {
                 switch (strRole) {
                     case "admin":
-                        RoleEntity adminRole = roleRepository.findByName(RoleEnum.ADMIN)
+                        RoleEntity adminRole = roleRepository.findByRole(RoleEnum.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
                         roles.add(adminRole);
                         break;
 
                     case "mod":
-                        RoleEntity modRole = roleRepository.findByName(RoleEnum.MODERATOR)
+                        RoleEntity modRole = roleRepository.findByRole(RoleEnum.MODERATOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
                         roles.add(modRole);
                         break;
 
                     default:
-                        RoleEntity userRole = roleRepository.findByName(RoleEnum.USER)
+                        RoleEntity userRole = roleRepository.findByRole(RoleEnum.USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
                         roles.add(userRole);
                 }
             }
         }
 
-        UserEntity user = new UserEntity(signUpRequest.getUsername(), signUpRequest. getPassword(),
-                signUpRequest.getFullname(), signUpRequest.getEmail(), roles);
+        UserEntity user = new UserEntity(signUpRequest.getUsername(), encoder.encode(signUpRequest. getPassword()),
+                signUpRequest.getFullName(), signUpRequest.getEmail(), roles);
 
         userRepository.save(user);
 
