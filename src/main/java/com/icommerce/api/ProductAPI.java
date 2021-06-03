@@ -16,20 +16,20 @@ public class ProductAPI {
     private ProductService productService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ProductDTO createProduct(@RequestBody ProductDTO model) {
         return productService.save(model);
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ProductDTO updateProduct(@RequestBody ProductDTO model, @PathVariable("id") long id) {
         model.setId(id);
         return productService.save(model);
     }
 
     @DeleteMapping()
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public void deleteProduct(@RequestBody long[] ids) {
         productService.delete(ids);
     }
