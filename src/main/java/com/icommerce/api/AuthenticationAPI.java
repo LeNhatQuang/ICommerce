@@ -103,7 +103,7 @@ public class AuthenticationAPI {
         }
 
         UserEntity user = new UserEntity(signUpRequest.getUsername(), encoder.encode(signUpRequest. getPassword()),
-                signUpRequest.getFullName(), signUpRequest.getEmail(), roles);
+                signUpRequest.getFullName(), signUpRequest.getEmail(), roles, null);
 
         userRepository.save(user);
 

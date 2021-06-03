@@ -1,10 +1,12 @@
 package com.icommerce.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "\"order\"")
@@ -24,4 +26,7 @@ public class OrderEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<ProductOrderEntity> productOrders;
+
+    @ManyToOne
+    private UserEntity user;
 }
