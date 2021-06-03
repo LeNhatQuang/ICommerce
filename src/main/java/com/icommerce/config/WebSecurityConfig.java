@@ -25,6 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthEntryPointJwtConfig authEntryPointJwtConfig;
 
+    @Bean
     public AuthTokenFilter authTokenFilter() {
         return new AuthTokenFilter();
     }
@@ -51,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authEntryPointJwtConfig).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/authentication/**").permitAll()
-                .antMatchers("/api/test/user").hasRole("USER")
+                .antMatchers("/api/product/**").permitAll()
+                .antMatchers("/api/order/**").hasAuthority("USER")
                 .anyRequest().authenticated();
         httpSecurity.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

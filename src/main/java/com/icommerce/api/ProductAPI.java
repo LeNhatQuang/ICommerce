@@ -15,18 +15,21 @@ public class ProductAPI {
     @Autowired
     private ProductService productService;
 
-    @PostMapping()
+    @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ProductDTO createProduct(@RequestBody ProductDTO model) {
         return productService.save(model);
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ProductDTO updateProduct(@RequestBody ProductDTO model, @PathVariable("id") long id) {
         model.setId(id);
         return productService.save(model);
     }
 
     @DeleteMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteProduct(@RequestBody long[] ids) {
         productService.delete(ids);
     }
@@ -37,7 +40,6 @@ public class ProductAPI {
     }
 
     @GetMapping("/all")
-    //@PreAuthorize("hasRole('USER')")
     public List<ProductDTO> getAllProducts() {
         return productService.findAll();
     }
