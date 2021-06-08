@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -55,7 +57,7 @@ public class AuthenticationAPI {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new JwtResponseDTO(jwt,
@@ -83,12 +85,16 @@ public class AuthenticationAPI {
             for(String strRole : strRoles) {
                 switch (strRole) {
                     case "admin":
-                        RoleEntity adminRole = roleRepository.findByRole(RoleEnum.ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
-                        roles.add(adminRole);
-                        break;
+                        return ResponseEntity.badRequest().body(
+                                new MessageResponseDTO("Error: Cannot create admin user"));
 
                     case "mod":
+                        SimpleGrantedAuthority role = new SimpleGrantedAuthority(RoleEnum.ADMIN.name());
+                        if(!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(role)) {
+                            return ResponseEntity.badRequest().body(
+                                    new MessageResponseDTO("Error: you cannot create moderator user"));
+                        }
+
                         RoleEntity modRole = roleRepository.findByRole(RoleEnum.MODERATOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found!"));
                         roles.add(modRole);

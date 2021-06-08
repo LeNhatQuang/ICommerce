@@ -3,8 +3,11 @@ package com.icommerce.service;
 import com.icommerce.converter.OrderConverter;
 import com.icommerce.dto.OrderDTO;
 import com.icommerce.entity.OrderEntity;
+import com.icommerce.entity.UserEntity;
 import com.icommerce.repository.OrderRepository;
+import com.icommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class OrderService{
     @Autowired
     private OrderConverter orderConverter;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public OrderDTO save(OrderDTO orderDTO) {
         OrderEntity orderEntity;
 
@@ -28,6 +34,9 @@ public class OrderService{
         } else {
             orderEntity = orderConverter.toEntity(orderDTO);
         }
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = userRepository.getOne(userDetails.getId());
+        orderEntity.setUser(userEntity);
 
         orderEntity = orderRepository.save(orderEntity);
         return orderConverter.toDTO(orderEntity);
